@@ -10,8 +10,9 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler("api.log"),  # Логи в файл
-        logging.StreamHandler()  # Логи в консоль
-    ]
+        logging.StreamHandler(),  # Логи в консоль
+    ],
+    encoding='utf-8'
 )
 logger = logging.getLogger(__name__)
 

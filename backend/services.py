@@ -10,12 +10,13 @@ from fastapi import HTTPException
 
 # Настройка логирования
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler("api.log"),
         logging.StreamHandler()
-    ]
+    ],
+    encoding='utf-8'
 )
 logger = logging.getLogger(__name__)
 
@@ -79,7 +80,7 @@ class PopulationService:
                 bottom_right_x, bottom_right_y)
 
             density = value / self.PIXEL_AREA_KM2
-            logger.info(f"Population density: {density:.0f} people/km²")
+            logger.info(f"Population density: {density:.0f} people/km2")
 
             response = {
                 "coordinates": {
@@ -192,4 +193,3 @@ class PopulationService:
         if hasattr(self, 'src'):
             self.src.close()
             logger.info("GeoTIFF closed")
-

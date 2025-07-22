@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { MapContainer, TileLayer, Rectangle, useMapEvents, Tooltip, Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L, {type LatLngTuple } from 'leaflet';
+import L, { type LatLngTuple } from 'leaflet';
 import type { PopulationData } from '../types';
 
 // Невидимая иконка для Marker
@@ -36,7 +36,7 @@ const Map: React.FC<MapProps> = ({ onPopulationData }) => {
         }
 
         try {
-          const response = await fetch('http://localhost:8000/population', {
+          const response = await fetch('http://46.53.187.182:8000/population', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ lat, lon: lng }),
