@@ -6,7 +6,7 @@ from rasterio.windows import Window
 from .models import Coordinates
 
 class PopulationService:
-    TIF_PATH = "backend/data/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0.tif"
+    TIF_PATH = "backend/data/GHS_POP_E2030_GLOBE_R2023A_54009_100_V1_0.tif"
     PIXEL_AREA_KM2 = 0.01
 
     def __init__(self):

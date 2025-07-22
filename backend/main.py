@@ -20,7 +20,9 @@ app = FastAPI()
 # Настройка CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5174"],
+    allow_origins=["http://localhost:5173",
+                   "http://192.168.1.163:5173",
+                   "http://office.baes.by"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,18 +40,29 @@ async def log_requests(request: Request, call_next):
             body = await request.json()
         except Exception as e:
             body = f"Failed to parse body: {str(e)}"
-    logger.info(f"Incoming request: {request.method} {request.url} Body: {body}")
+    logger.info(
+        f"Incoming request: {request.method} {request.url} Body: {body}")
 
     response = await call_next(request)
     logger.info(f"Response status: {response.status_code}")
     return response
 
 # Dependency для PopulationService
+
+
 def get_population_service():
     return PopulationService()
 
+
 @app.post("/population")
-async def get_population(coords: Coordinates, service: PopulationService = Depends(get_population_service)):
+async def get_population(
+    coords: Coordinates,
+    request: Request,
+    service: PopulationService = Depends(get_population_service)
+):
+    user_ip = request.client.host
+    user_agent = request.headers.get("User-Agent")
     response = service.get_population_data(coords)
-    logger.info(f"Response data: {response}")
+    logger.info(
+        f"User IP: {user_ip}, User-Agent: {user_agent}, Response data: {response}")
     return response

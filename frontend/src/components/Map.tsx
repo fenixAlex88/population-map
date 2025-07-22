@@ -54,7 +54,7 @@ const Map: React.FC<MapProps> = ({ onPopulationData }) => {
             [data.coordinates.pixel_corners.bottom_right.lat, data.coordinates.pixel_corners.bottom_right.lon],
           ]);
           setTooltipPosition([lat, lng]);
-        } catch (error) {
+        } catch {
           setPopulationData(null);
           setRectangle(null);
           setTooltipPosition(null);
