@@ -1,55 +1,87 @@
-from fastapi import HTTPException
-from pyproj import Transformer
-import rasterio
-from rasterio.transform import rowcol, xy
-from rasterio.windows import Window
+import numpy as np
+import logging
 from .models import Coordinates
+from shapely.geometry import Polygon, Point
+from rasterio.windows import Window
+from rasterio.transform import rowcol, xy
+import rasterio
+from pyproj import Transformer
+from fastapi import HTTPException
+
+# Настройка логирования
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("api.log"),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
 
 class PopulationService:
-    TIF_PATH = "backend/data/GHS_POP_E2030_GLOBE_R2023A_54009_100_V1_0.tif"
+    TIF_PATH = r"backend/data/GHS_POP_E2030_GLOBE_R2023A_54009_100_V1_0.tif"
     PIXEL_AREA_KM2 = 0.01
 
     def __init__(self):
-        # Initialize rasterio dataset and transformer
-        self.src = rasterio.open(self.TIF_PATH)
-        self.crs_target = self.src.crs
-        self.transformer = Transformer.from_crs("EPSG:4326", self.crs_target, always_xy=True)
-        self.transformer_back = Transformer.from_crs(self.crs_target, "EPSG:4326", always_xy=True)
-        self.dataset_transform = self.src.transform
-        self.dataset_height = self.src.height
-        self.dataset_width = self.src.width
-        self.nodata = self.src.nodata
+        try:
+            logger.info(f"Opening GeoTIFF file: {self.TIF_PATH}")
+            self.src = rasterio.open(self.TIF_PATH)
+            self.crs_target = self.src.crs
+            self.transformer = Transformer.from_crs(
+                "EPSG:4326", self.crs_target, always_xy=True)
+            self.transformer_back = Transformer.from_crs(
+                self.crs_target, "EPSG:4326", always_xy=True)
+            self.dataset_transform = self.src.transform
+            self.dataset_height = self.src.height
+            self.dataset_width = self.src.width
+            self.nodata = self.src.nodata
+            bounds = self.src.bounds
+            logger.info(
+                f"GeoTIFF bounds: left={bounds.left}, bottom={bounds.bottom}, right={bounds.right}, top={bounds.top}")
+            logger.info("GeoTIFF successfully opened")
+        except Exception as e:
+            logger.error(f"Failed to initialize GeoTIFF: {e}")
+            raise
 
     def get_population_data(self, coords: Coordinates):
         try:
-            # Project coordinates to GeoTIFF CRS
+            logger.info(
+                f"Processing coordinates: lat={coords.lat}, lon={coords.lon}")
             x, y = self.transformer.transform(coords.lon, coords.lat)
             row, col = rowcol(self.dataset_transform, x, y)
+            logger.debug(
+                f"Transformed coordinates: x={x}, y={y}, row={row}, col={col}")
 
-            # Check if coordinates are within dataset bounds
             if not (0 <= row < self.dataset_height and 0 <= col < self.dataset_width):
-                raise HTTPException(status_code=400, detail="Coordinates outside dataset bounds")
+                logger.warning(
+                    f"Coordinates outside dataset bounds: row={row}, col={col}")
+                raise HTTPException(
+                    status_code=400, detail="Coordinates outside dataset bounds")
 
-            # Read pixel value
             window = Window(col, row, 1, 1)
             value = self.src.read(1, window=window)[0, 0]
+            logger.debug(f"Pixel value: {value}")
 
             if value == self.nodata or value is None:
-                raise HTTPException(status_code=404, detail="No population data for this point")
+                logger.warning("No population data for this point")
+                raise HTTPException(
+                    status_code=404, detail="No population data for this point")
 
-            # Calculate pixel corner coordinates
             top_left_x, top_left_y = xy(self.dataset_transform, row, col)
-            bottom_right_x, bottom_right_y = xy(self.dataset_transform, row + 1, col + 1)
+            bottom_right_x, bottom_right_y = xy(
+                self.dataset_transform, row + 1, col + 1)
 
-            # Transform corners back to geographic coordinates
-            top_left_lon, top_left_lat = self.transformer_back.transform(top_left_x, top_left_y)
-            bottom_right_lon, bottom_right_lat = self.transformer_back.transform(bottom_right_x, bottom_right_y)
+            top_left_lon, top_left_lat = self.transformer_back.transform(
+                top_left_x, top_left_y)
+            bottom_right_lon, bottom_right_lat = self.transformer_back.transform(
+                bottom_right_x, bottom_right_y)
 
-            # Calculate density
             density = value / self.PIXEL_AREA_KM2
+            logger.info(f"Population density: {density:.0f} people/km²")
 
-            # Prepare response
-            return {
+            response = {
                 "coordinates": {
                     "input": {"lat": coords.lat, "lon": coords.lon},
                     "pixel_corners": {
@@ -60,13 +92,104 @@ class PopulationService:
                 "population_per_hectare": value,
                 "density_per_km2": round(density)
             }
+            logger.info(f"Returning response: {response}")
+            return response
 
         except ValueError as e:
-            raise HTTPException(status_code=400, detail="Invalid coordinate format")
+            logger.error(f"Invalid coordinate format: {e}")
+            raise HTTPException(
+                status_code=400, detail="Invalid coordinate format")
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
+            logger.error(f"Processing error: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=500, detail=f"Server error: {str(e)}")
+
+    def get_polygon_population(self, coordinates: list[list[float]]):
+        try:
+            logger.info(f"Processing polygon with coordinates: {coordinates}")
+            if len(coordinates) < 3:
+                logger.error("Invalid polygon: less than 3 points")
+                raise HTTPException(
+                    status_code=400, detail="Polygon must have at least 3 points")
+
+            # Преобразуем координаты в проекцию GeoTIFF
+            transformed_coords = [self.transformer.transform(
+                lon, lat) for lat, lon in coordinates]
+            logger.debug(f"Transformed coordinates: {transformed_coords}")
+            polygon = Polygon(transformed_coords)
+
+            # Получаем ограничивающий прямоугольник (bounding box) полигона
+            minx, miny, maxx, maxy = polygon.bounds
+            logger.debug(
+                f"Polygon bounds: minx={minx}, miny={miny}, maxx={maxx}, maxy={maxy}")
+
+            # Преобразуем границы в строки и столбцы
+            min_row, min_col = rowcol(self.dataset_transform, minx, miny)
+            max_row, max_col = rowcol(self.dataset_transform, maxx, maxy)
+            logger.debug(
+                f"Row/col bounds: min_row={min_row}, min_col={min_col}, max_row={max_row}, max_col={max_col}")
+
+            # Корректируем инверсию строк (в Mollweide строки уменьшаются с увеличением широты)
+            if min_row > max_row:
+                min_row, max_row = max_row, min_row
+            if min_col > max_col:
+                min_col, max_col = max_col, min_col
+            logger.debug(
+                f"Swapped bounds: min_row={min_row}, min_col={min_col}, max_row={max_row}, max_col={max_col}")
+
+            # Ограничиваем границы, чтобы не выходить за пределы GeoTIFF
+            min_row = max(0, min_row)
+            min_col = max(0, min_col)
+            max_row = min(self.dataset_height, max_row)
+            max_col = min(self.dataset_width, max_col)
+            logger.debug(
+                f"Adjusted bounds: min_row={min_row}, min_col={min_col}, max_row={max_row}, max_col={max_col}")
+
+            # Проверяем, что окно валидно
+            if min_row >= max_row or min_col >= max_col:
+                logger.warning(
+                    "Invalid window after adjustment: min_row >= max_row or min_col >= max_col")
+                raise HTTPException(
+                    status_code=400, detail="Polygon is too small or outside dataset bounds")
+
+            # Читаем данные из GeoTIFF для области
+            window = Window(min_col, min_row, max_col -
+                            min_col, max_row - min_row)
+            logger.debug(
+                f"Reading window: col_off={window.col_off}, row_off={window.row_off}, width={window.width}, height={window.height}")
+            data = self.src.read(1, window=window)
+            logger.debug(f"Read data shape: {data.shape}")
+
+            # Создаём маску для полигона в пиксельной системе координат
+            pixel_coords = [
+                rowcol(self.dataset_transform, x, y) for x, y in transformed_coords
+            ]
+            pixel_polygon = Polygon(
+                [(col - min_col, row - min_row) for row, col in pixel_coords])
+            logger.debug(f"Pixel polygon: {pixel_polygon}")
+
+            mask = np.zeros_like(data, dtype=bool)
+            for row in range(data.shape[0]):
+                for col in range(data.shape[1]):
+                    if pixel_polygon.contains(Point(col + 0.5, row + 0.5)):
+                        mask[row, col] = True
+
+            # Суммируем население (игнорируем nodata)
+            population = np.where((data != self.nodata) & (
+                data is not None) & mask, data, 0).sum()
+            logger.info(f"Total population in polygon: {population:.1f}")
+
+            return {"total_population": population}
+        except HTTPException as e:
+            logger.error(f"HTTP error in polygon processing: {e.detail}")
+            raise
+        except Exception as e:
+            logger.error(f"Error processing polygon: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=500, detail=f"Server error: {str(e)}")
 
     def __del__(self):
-        # Ensure the dataset is closed when the service is destroyed
         if hasattr(self, 'src'):
             self.src.close()
+            logger.info("GeoTIFF closed")
+

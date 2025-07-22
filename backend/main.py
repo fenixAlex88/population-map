@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, Request
+from fastapi import FastAPI, Depends, Request ,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .models import Coordinates
 from .services import PopulationService
@@ -65,4 +65,17 @@ async def get_population(
     response = service.get_population_data(coords)
     logger.info(
         f"User IP: {user_ip}, User-Agent: {user_agent}, Response data: {response}")
+    return response
+
+
+@app.post("/population/polygon")
+async def get_polygon_population(data: dict, service: PopulationService = Depends(get_population_service)):
+    coordinates = data.get("coordinates", [])
+    if not coordinates or len(coordinates) < 3:
+        logger.error(
+            "Invalid polygon coordinates: less than 3 points or empty")
+        raise HTTPException(
+            status_code=400, detail="Polygon must have at least 3 points")
+    response = service.get_polygon_population(coordinates)
+    logger.info(f"Polygon response data: {response}")
     return response
