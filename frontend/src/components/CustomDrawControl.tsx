@@ -1,104 +1,129 @@
 import { useState, useEffect } from 'react';
-import { useMapEvents, Polyline, CircleMarker } from 'react-leaflet';
-import L, { type LatLngTuple } from 'leaflet';
+import {
+  useMap, useMapEvents,
+  Polygon, Polyline, Marker, Tooltip, CircleMarker
+} from 'react-leaflet';
+import L, {type LatLngTuple } from 'leaflet';
 
-interface CustomDrawControlProps {
+interface Props {
   onPolygonCreated: (coordinates: LatLngTuple[]) => void;
   onPolygonDeleted: () => void;
   isDrawing: boolean;
-  setIsDrawing: (isDrawing: boolean) => void;
+  setIsDrawing: (drawing: boolean) => void;
+  polygonPopulation: number | null;
+  errorMessage: string | null;
 }
 
-const CustomDrawControl: React.FC<CustomDrawControlProps> = ({
+const icon = L.divIcon({ className: 'invisible', iconSize: [0, 0] });
+
+const CustomDrawControl: React.FC<Props> = ({
   onPolygonCreated,
   onPolygonDeleted,
   isDrawing,
   setIsDrawing,
+  polygonPopulation,
+  errorMessage,
 }) => {
+  const map = useMap();
   const [points, setPoints] = useState<LatLngTuple[]>([]);
+  const [polygon, setPolygon] = useState<LatLngTuple[] | null>(null);
 
-  const map = useMapEvents({
-    click: (e: L.LeafletMouseEvent) => {
+  // Рисование полигона по клику
+  useMapEvents({
+    click: (e) => {
+      const target = e.originalEvent?.target as HTMLElement;
+      if (target.closest('.leaflet-draw-toolbar')) return;
+
       if (!isDrawing) return;
-
       const { lat, lng } = e.latlng;
-      console.log(`Drawing point added: lat = ${ lat }, lon = ${ lng } `);
 
-      // Проверяем, замыкается ли полигон (клик на первую точку)
-      if (points.length > 0 && points[0] && Math.abs(lat - points[0][0]) < 0.0001 && Math.abs(lng - points[0][1]) < 0.0001 && points.length >= 3) {
-        console.log('Polygon closed by clicking first point');
-        onPolygonCreated(points);
-        setIsDrawing(false);
-        setPoints([]);
+      if (points.length === 0) {
+        setPoints([[lat, lng]]);
         return;
       }
 
-      setPoints((prev) => [...prev, [lat, lng]]);
-    },
+      const [firstLat, firstLng] = points[0];
+      const closing = Math.abs(lat - firstLat) < 0.0001 && Math.abs(lng - firstLng) < 0.0001;
+
+      if (closing && points.length >= 3) {
+        const closed = [...points, points[0]];
+        setPolygon(closed);
+        setPoints([]);
+        setIsDrawing(false);
+        onPolygonCreated(closed);
+        return;
+      }
+
+      setPoints([...points, [lat, lng]]);
+    }
   });
 
-  // Добавляем кнопки для начала/остановки рисования и удаления
+  // Добавление панели кнопок через L.Control
   useEffect(() => {
-    console.log('CustomDrawControl mounted');
-    const drawControl = L.control({ position: 'topright' });
-    drawControl.onAdd = () => {
-      const div = L.DomUtil.create('div', 'leaflet-draw-toolbar');
-      const button = L.DomUtil.create('a', 'leaflet-draw-draw-polygon', div);
-      button.title = isDrawing ? 'Отменить рисование' : 'Нарисовать полигон';
-      button.innerHTML = isDrawing ? '❌' : '📍';
-      L.DomEvent.on(button, 'click', () => {
-        if (isDrawing) {
-          console.log('Draw stopped by button');
-          if (points.length >= 3) {
-            console.log('Completing polygon on cancel');
-            const closedPoints = [...points, points[0]]; // Завершаем полигон
-            onPolygonCreated(closedPoints);
-          } else {
-            console.log('Not enough points to form a polygon, resetting');
-          }
-          setIsDrawing(false);
-          setPoints([]);
-        } else {
-          console.log('Draw started by button');
-          setIsDrawing(true);
-        }
-      });
-      return div;
-    };
-    drawControl.addTo(map);
+    const control = L.control({ position: 'topright' });
 
-    const deleteControl = L.control({ position: 'topright' });
-    deleteControl.onAdd = () => {
-      const div = L.DomUtil.create('div', 'leaflet-draw-toolbar');
-      const button = L.DomUtil.create('a', 'leaflet-draw-edit-remove', div);
-      button.title = 'Удалить полигон';
-      button.innerHTML = '🗑️';
-      L.DomEvent.on(button, 'click', () => {
-        console.log('Polygon deleted by button');
+    control.onAdd = () => {
+      const container = L.DomUtil.create('div', 'leaflet-draw-toolbar flex flex-col gap-2 m-4');
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
+
+      const drawBtn = L.DomUtil.create('button', '', container);
+      drawBtn.innerHTML = isDrawing ? '❌' : '📍';
+      drawBtn.className = 'bg-white w-14 h-14 rounded shadow text-xl';
+      L.DomEvent.disableClickPropagation(drawBtn);
+      drawBtn.onclick = () => {
+        setPolygon(null);
         onPolygonDeleted();
+        setIsDrawing(!isDrawing);
         setPoints([]);
-      });
-      return div;
-    };
-    deleteControl.addTo(map);
+      };
 
-    return () => {
-      drawControl.remove();
-      deleteControl.remove();
+      const delBtn = L.DomUtil.create('button', '', container);
+      delBtn.innerHTML = '🗑️';
+      delBtn.className = 'bg-white w-14 h-14 rounded shadow text-xl';
+      L.DomEvent.disableClickPropagation(delBtn);
+      delBtn.onclick = () => {
+        setPolygon(null);
+        onPolygonDeleted();
+      };
+
+      return container;
     };
-  }, [map, isDrawing, setIsDrawing, onPolygonDeleted, points, onPolygonCreated]);
+
+    control.addTo(map);
+    return () => control.remove();
+  }, [map, isDrawing]);
 
   return (
     <>
+      {/* Рисование */}
       {points.length > 0 && (
         <>
-          <Polyline positions={points} pathOptions={{ color: 'red', weight: 2, dashArray: '5, 5' }} />
-          {points.map((point, index) => (
-            <CircleMarker key={index} center={point} radius={3} color="red" fillOpacity={1} />
+          <Polyline positions={points} pathOptions={{ color: 'red', dashArray: '5,5' }} />
+          {points.map((p, i) => (
+            <CircleMarker key={i} center={p} radius={3} color="red" />
           ))}
           {points.length >= 3 && (
-            <CircleMarker center={points[0]} radius={5} color="green" fillOpacity={1} />
+            <CircleMarker center={points[0]} radius={6} color="green" />
           )}
+        </>
+      )}
+
+      {/* Готовый полигон с тултипом */}
+      {polygon && (
+        <>
+          <Polygon positions={polygon} pathOptions={{ color: 'red', fillOpacity: 0.3 }} />
+          <Marker position={polygon[0]} icon={icon}>
+            <Tooltip permanent>
+              {errorMessage ? (
+                <div><strong>Ошибка:</strong> {errorMessage}</div>
+              ) : polygonPopulation !== null ? (
+                <div><strong>Население:</strong> {polygonPopulation.toFixed(1)}</div>
+              ) : (
+                <div><strong>Нет данных</strong></div>
+              )}
+            </Tooltip>
+          </Marker>
         </>
       )}
     </>
