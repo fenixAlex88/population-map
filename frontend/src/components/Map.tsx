@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  MapContainer, TileLayer, Rectangle, Marker, Tooltip,
-  FeatureGroup, useMapEvents
+  MapContainer, Rectangle, Marker, Tooltip,
+  FeatureGroup, useMapEvents,
+  ScaleControl
 } from 'react-leaflet';
 import L, { type LatLngTuple } from 'leaflet';
 import CustomDrawControl from './CustomDrawControl';
 import type { PopulationData } from '../types';
 import 'leaflet/dist/leaflet.css';
+import LayerSwitcher from './LayerSwitcher';
 
 const invisibleIcon = L.divIcon({ className: 'invisible-marker', iconSize: [0, 0] });
 
@@ -19,6 +21,7 @@ const Map: React.FC<{ onPopulationData: (data: PopulationData | null) => void }>
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isDrawingPolygon, setIsDrawingPolygon] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
 
   function calculateGeodesicArea(latlngs: LatLngTuple[]): number {
     const radius = 6378137; // радиус Земли в метрах (WGS84)
@@ -120,10 +123,8 @@ const Map: React.FC<{ onPopulationData: (data: PopulationData | null) => void }>
 
   return (
     <MapContainer id='map-container' center={[53.9, 27.56]} zoom={10} style={{ height: '100vh', width: '100%' }} attributionControl={false}>
-      <TileLayer
-        url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-        attribution='© OpenStreetMap contributors'
-      />
+      <LayerSwitcher />
+
       <FeatureGroup>
         <CustomDrawControl
           onPolygonCreated={handlePolygonCreated}
@@ -147,8 +148,8 @@ const Map: React.FC<{ onPopulationData: (data: PopulationData | null) => void }>
                 <p><strong>Ошибка:</strong> {errorMessage}</p>
               ) : polygonPopulation !== null && polygon ? (
                 <>
-                  <p><strong>Население в полигоне:</strong> {polygonPopulation.toFixed(1)}</p>
-                  <p><strong>Площадь:</strong> {(calculateGeodesicArea(polygon) / 1e6).toFixed(2)} км²</p>
+                  <p><strong>Население в контуре:</strong> {polygonPopulation.toFixed(1)}</p>
+                  <p><strong>Площадь контура:</strong> {(calculateGeodesicArea(polygon) / 1e6).toFixed(2)} км²</p>
                   <p><strong>Плотность:</strong> {(polygonPopulation / (calculateGeodesicArea(polygon) / 1e6)).toFixed(1)} чел./км²</p>
                 </>
               ) : (
@@ -167,13 +168,15 @@ const Map: React.FC<{ onPopulationData: (data: PopulationData | null) => void }>
         <Marker position={tooltipPosition} icon={invisibleIcon}>
           <Tooltip permanent>
             <div className='text-sm'>
-              <p><strong>lat</strong> {populationData.coordinates.input.lat.toFixed(5)}, <strong>lon</strong> {populationData.coordinates.input.lon.toFixed(5)}</p>
+              <p><strong>Широта:</strong> {populationData.coordinates.input.lat.toFixed(5)}</p>
+              <p> <strong>Долгота:</strong> {populationData.coordinates.input.lon.toFixed(5)}</p>
               <p><strong>На гектар:</strong> {populationData.population_per_hectare.toFixed(1)} человек</p>
               <p><strong>Плотность:</strong> {populationData.density_per_km2} чел./км²</p>
             </div>
           </Tooltip>
         </Marker>
       )}
+      <ScaleControl position='bottomright' />
     </MapContainer>
   );
 };

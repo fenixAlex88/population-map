@@ -1,5 +1,4 @@
 import numpy as np
-import logging
 from .models import Coordinates
 from shapely.geometry import Polygon, Point
 from rasterio.windows import Window
@@ -7,18 +6,7 @@ from rasterio.transform import rowcol, xy
 import rasterio
 from pyproj import Transformer
 from fastapi import HTTPException
-
-# Настройка логирования
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler("api.log"),
-        logging.StreamHandler()
-    ],
-    encoding='utf-8'
-)
-logger = logging.getLogger(__name__)
+from .logger import logger
 
 
 class PopulationService:
@@ -105,7 +93,6 @@ class PopulationService:
             raise HTTPException(
                 status_code=500, detail=f"Server error: {str(e)}")
 
-
     def get_polygon_population(self, coordinates: list[list[float]]):
         try:
             logger.info(f"Processing polygon with coordinates: {coordinates}")
@@ -131,7 +118,8 @@ class PopulationService:
             min_col = max(0, min_col)
             max_col = min(self.dataset_width, max_col)
 
-            window = Window(min_col, min_row, max_col - min_col, max_row - min_row)
+            window = Window(min_col, min_row, max_col -
+                            min_col, max_row - min_row)
             data = self.src.read(1, window=window)
 
             pixel_coords = [rowcol(self.dataset_transform, x, y)
@@ -161,8 +149,8 @@ class PopulationService:
             raise
         except Exception as e:
             logger.error(f"Error processing polygon: {e}", exc_info=True)
-            raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
-
+            raise HTTPException(
+                status_code=500, detail=f"Server error: {str(e)}")
 
     def __del__(self):
         if hasattr(self, 'src'):

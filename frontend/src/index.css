@@ -9,3 +9,10 @@
   height: 100vh;
   cursor: default;
 }
+
+.leaflet-control-scale {
+  font-size: 12px;
+  background-color: white;
+  padding: 4px;
+  border-radius: 4px;
+}

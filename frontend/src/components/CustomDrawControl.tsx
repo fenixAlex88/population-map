@@ -27,6 +27,8 @@ const CustomDrawControl: React.FC<Props> = ({
   const map = useMap();
   const [points, setPoints] = useState<LatLngTuple[]>([]);
   const [polygon, setPolygon] = useState<LatLngTuple[] | null>(null);
+  const [mousePosition, setMousePosition] = useState<LatLngTuple | null>(null);
+
 
   // Рисование полигона по клику
   useMapEvents({
@@ -42,6 +44,10 @@ const CustomDrawControl: React.FC<Props> = ({
         return;
       }
       setPoints([...points, [lat, lng]]);
+    },
+    mousemove: (e) => {
+      const { lat, lng } = e.latlng;
+      setMousePosition([lat, lng]);
     }
   });
 
@@ -129,6 +135,14 @@ const CustomDrawControl: React.FC<Props> = ({
             </Tooltip>
           </Marker>
         </>
+      )}
+      {/* Сообщеие о завершении полигона на курсоре */}
+      {isDrawing && points.length >= 3 && mousePosition && (
+        <Marker position={mousePosition} icon={icon}>
+          <Tooltip direction='auto' offset={[10, 0]} opacity={1} permanent>
+            <span className="text-xs text-gray-800">Нажмите на первую точку для завершения</span>
+          </Tooltip>
+        </Marker>
       )}
     </>
   );

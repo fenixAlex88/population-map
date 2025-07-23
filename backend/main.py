@@ -2,19 +2,7 @@ from fastapi import FastAPI, Depends, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .models import Coordinates
 from .services import PopulationService
-import logging
-
-# Настройка логирования
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler("api.log"),  # Логи в файл
-        logging.StreamHandler(),  # Логи в консоль
-    ],
-    encoding='utf-8'
-)
-logger = logging.getLogger(__name__)
+from .logger import logger
 
 app = FastAPI()
 
