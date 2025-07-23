@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, Request ,HTTPException
+from fastapi import FastAPI, Depends, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .models import Coordinates
 from .services import PopulationService
@@ -21,9 +21,7 @@ app = FastAPI()
 # Настройка CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173",
-                   "http://192.168.1.163:5173",
-                   "http://office.baes.by"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

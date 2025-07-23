@@ -3,11 +3,10 @@ import {
   MapContainer, TileLayer, Rectangle, Marker, Tooltip,
   FeatureGroup, useMapEvents
 } from 'react-leaflet';
-import L, {type LatLngTuple } from 'leaflet';
+import L, { type LatLngTuple } from 'leaflet';
 import CustomDrawControl from './CustomDrawControl';
 import type { PopulationData } from '../types';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet-geometryutil';
 
 const invisibleIcon = L.divIcon({ className: 'invisible-marker', iconSize: [0, 0] });
 
@@ -22,25 +21,30 @@ const Map: React.FC<{ onPopulationData: (data: PopulationData | null) => void }>
   const [isLoading, setIsLoading] = useState(false);
 
   function calculateGeodesicArea(latlngs: LatLngTuple[]): number {
-  const radius = 6378137; // радиус Земли в метрах (WGS84)
-  const coordinates = latlngs.map(([lat, lon]) => [lon * Math.PI / 180, lat * Math.PI / 180]);
+    const radius = 6378137; // радиус Земли в метрах (WGS84)
+    const coordinates = latlngs.map(([lat, lon]) => [lon * Math.PI / 180, lat * Math.PI / 180]);
 
-  let area = 0;
-  for (let i = 0, len = coordinates.length; i < len; i++) {
-    const [lon1, lat1] = coordinates[i];
-    const [lon2, lat2] = coordinates[(i + 1) % len];
-    area += (lon2 - lon1) * (2 + Math.sin(lat1) + Math.sin(lat2));
+    let area = 0;
+    for (let i = 0, len = coordinates.length; i < len; i++) {
+      const [lon1, lat1] = coordinates[i];
+      const [lon2, lat2] = coordinates[(i + 1) % len];
+      area += (lon2 - lon1) * (2 + Math.sin(lat1) + Math.sin(lat2));
+    }
+
+    return Math.abs(area * radius * radius / 2); // в м²
   }
-
-  return Math.abs(area * radius * radius / 2); // в м²
-}
 
 
   const handlePolygonCreated = async (coords: LatLngTuple[]) => {
     const area = calculateGeodesicArea(coords);
     console.log(area)
     if (area > 500_000_000) {
-      setErrorMessage('Полигон слишком большой ('+ (area/1_000_000).toFixed(1) + ' > 500 км²)');
+      setErrorMessage('Полигон слишком большой (' + (area / 1_000_000).toFixed(1) + ' > 500 км²)');
+      setIsDrawingPolygon(false);
+      return;
+    }
+    if (area < 50_000) {
+      setErrorMessage('Полигон слишком маленький (' + (area / 1_000_000).toFixed(3) + ' < 0.05 км²)');
       setIsDrawingPolygon(false);
       return;
     }
@@ -48,7 +52,7 @@ const Map: React.FC<{ onPopulationData: (data: PopulationData | null) => void }>
     setPolygon(coords);
     setIsLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/population/polygon', {
+      const res = await fetch('http://46.53.187.144:8000/population/polygon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ coordinates: coords })
@@ -66,6 +70,8 @@ const Map: React.FC<{ onPopulationData: (data: PopulationData | null) => void }>
   };
 
   const handlePolygonDeleted = () => {
+    setTooltipPosition(null);
+    setRectangle(null);
     setPolygon(null);
     setPolygonPopulation(null);
     setErrorMessage(null);
@@ -86,7 +92,7 @@ const Map: React.FC<{ onPopulationData: (data: PopulationData | null) => void }>
         }
 
         try {
-          const res = await fetch('http://localhost:8000/population', {
+          const res = await fetch('http://46.53.187.144:8000/population', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ lat, lon: lng })
@@ -113,7 +119,7 @@ const Map: React.FC<{ onPopulationData: (data: PopulationData | null) => void }>
   };
 
   return (
-    <MapContainer center={[53.9, 27.56]} zoom={10} style={{ height: '100vh', width: '100%' }} attributionControl={false}>
+    <MapContainer id='map-container' center={[53.9, 27.56]} zoom={10} style={{ height: '100vh', width: '100%' }} attributionControl={false}>
       <TileLayer
         url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
         attribution='© OpenStreetMap contributors'

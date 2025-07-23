@@ -3,7 +3,7 @@ import {
   useMap, useMapEvents,
   Polygon, Polyline, Marker, Tooltip, CircleMarker
 } from 'react-leaflet';
-import L, {type LatLngTuple } from 'leaflet';
+import L, { type LatLngTuple } from 'leaflet';
 
 interface Props {
   onPolygonCreated: (coordinates: LatLngTuple[]) => void;
@@ -41,19 +41,6 @@ const CustomDrawControl: React.FC<Props> = ({
         setPoints([[lat, lng]]);
         return;
       }
-
-      const [firstLat, firstLng] = points[0];
-      const closing = Math.abs(lat - firstLat) < 0.0001 && Math.abs(lng - firstLng) < 0.0001;
-
-      if (closing && points.length >= 3) {
-        const closed = [...points, points[0]];
-        setPolygon(closed);
-        setPoints([]);
-        setIsDrawing(false);
-        onPolygonCreated(closed);
-        return;
-      }
-
       setPoints([...points, [lat, lng]]);
     }
   });
@@ -85,6 +72,7 @@ const CustomDrawControl: React.FC<Props> = ({
       delBtn.onclick = () => {
         setPolygon(null);
         onPolygonDeleted();
+        setPoints([]);
       };
 
       return container;
@@ -92,7 +80,7 @@ const CustomDrawControl: React.FC<Props> = ({
 
     control.addTo(map);
     return () => control.remove();
-  }, [map, isDrawing]);
+  }, [map, isDrawing, onPolygonDeleted, setIsDrawing]);
 
   return (
     <>
@@ -104,7 +92,23 @@ const CustomDrawControl: React.FC<Props> = ({
             <CircleMarker key={i} center={p} radius={3} color="red" />
           ))}
           {points.length >= 3 && (
-            <CircleMarker center={points[0]} radius={6} color="green" />
+            <CircleMarker
+              center={points[0]}
+              radius={9}
+              color="green"
+              eventHandlers={{
+                click: (e) => {
+                  e.originalEvent.stopPropagation(); // Останавливаем всплытие к карте
+                  if (isDrawing) {
+                    const closed = [...points, points[0]];
+                    setPolygon(closed);
+                    setPoints([]);
+                    setIsDrawing(false);
+                    onPolygonCreated(closed);
+                  }
+                }
+              }}
+            />
           )}
         </>
       )}

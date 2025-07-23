@@ -105,89 +105,64 @@ class PopulationService:
             raise HTTPException(
                 status_code=500, detail=f"Server error: {str(e)}")
 
+
     def get_polygon_population(self, coordinates: list[list[float]]):
         try:
             logger.info(f"Processing polygon with coordinates: {coordinates}")
             if len(coordinates) < 3:
-                logger.error("Invalid polygon: less than 3 points")
                 raise HTTPException(
                     status_code=400, detail="Polygon must have at least 3 points")
 
-            # Преобразуем координаты в проекцию GeoTIFF
             transformed_coords = [self.transformer.transform(
                 lon, lat) for lat, lon in coordinates]
-            logger.debug(f"Transformed coordinates: {transformed_coords}")
-            polygon = Polygon(transformed_coords)
+            polygon_proj = Polygon(transformed_coords)
+            minx, miny, maxx, maxy = polygon_proj.bounds
 
-            # Получаем ограничивающий прямоугольник (bounding box) полигона
-            minx, miny, maxx, maxy = polygon.bounds
-            logger.debug(
-                f"Polygon bounds: minx={minx}, miny={miny}, maxx={maxx}, maxy={maxy}")
-
-            # Преобразуем границы в строки и столбцы
             min_row, min_col = rowcol(self.dataset_transform, minx, miny)
             max_row, max_col = rowcol(self.dataset_transform, maxx, maxy)
-            logger.debug(
-                f"Row/col bounds: min_row={min_row}, min_col={min_col}, max_row={max_row}, max_col={max_col}")
 
-            # Корректируем инверсию строк (в Mollweide строки уменьшаются с увеличением широты)
-            if min_row > max_row:
-                min_row, max_row = max_row, min_row
-            if min_col > max_col:
-                min_col, max_col = max_col, min_col
-            logger.debug(
-                f"Swapped bounds: min_row={min_row}, min_col={min_col}, max_row={max_row}, max_col={max_col}")
+            # Swap if necessary
+            min_row, max_row = sorted([min_row, max_row])
+            min_col, max_col = sorted([min_col, max_col])
 
-            # Ограничиваем границы, чтобы не выходить за пределы GeoTIFF
+            # Clamp to dataset bounds
             min_row = max(0, min_row)
-            min_col = max(0, min_col)
             max_row = min(self.dataset_height, max_row)
+            min_col = max(0, min_col)
             max_col = min(self.dataset_width, max_col)
-            logger.debug(
-                f"Adjusted bounds: min_row={min_row}, min_col={min_col}, max_row={max_row}, max_col={max_col}")
 
-            # Проверяем, что окно валидно
-            if min_row >= max_row or min_col >= max_col:
-                logger.warning(
-                    "Invalid window after adjustment: min_row >= max_row or min_col >= max_col")
-                raise HTTPException(
-                    status_code=400, detail="Polygon is too small or outside dataset bounds")
-
-            # Читаем данные из GeoTIFF для области
-            window = Window(min_col, min_row, max_col -
-                            min_col, max_row - min_row)
-            logger.debug(
-                f"Reading window: col_off={window.col_off}, row_off={window.row_off}, width={window.width}, height={window.height}")
+            window = Window(min_col, min_row, max_col - min_col, max_row - min_row)
             data = self.src.read(1, window=window)
-            logger.debug(f"Read data shape: {data.shape}")
 
-            # Создаём маску для полигона в пиксельной системе координат
-            pixel_coords = [
-                rowcol(self.dataset_transform, x, y) for x, y in transformed_coords
-            ]
-            pixel_polygon = Polygon(
-                [(col - min_col, row - min_row) for row, col in pixel_coords])
-            logger.debug(f"Pixel polygon: {pixel_polygon}")
+            pixel_coords = [rowcol(self.dataset_transform, x, y)
+                            for x, y in transformed_coords]
+            pixel_polygon = Polygon([(col - min_col, row - min_row)
+                                    for row, col in pixel_coords])
 
             mask = np.zeros_like(data, dtype=bool)
-            for row in range(data.shape[0]):
-                for col in range(data.shape[1]):
-                    if pixel_polygon.contains(Point(col + 0.5, row + 0.5)):
-                        mask[row, col] = True
+            for r in range(data.shape[0]):
+                for c in range(data.shape[1]):
+                    if pixel_polygon.contains(Point(c + 0.5, r + 0.5)):
+                        mask[r, c] = True
 
-            # Суммируем население (игнорируем nodata)
-            population = np.where((data != self.nodata) & (
-                data is not None) & mask, data, 0).sum()
-            logger.info(f"Total population in polygon: {population:.1f}")
+            covered_pixels = np.count_nonzero(mask)
+            if covered_pixels == 0:
+                raise HTTPException(
+                    status_code=400, detail="Polygon covers no valid pixels in dataset")
 
-            return {"total_population": population}
+            valid = (data != self.nodata) & (data is not None) & mask
+            population = data[valid].sum()
+            logger.info(
+                f"Total population in polygon: {population:.1f} (pixels matched: {covered_pixels})")
+
+            return {"total_population": float(population)}
         except HTTPException as e:
             logger.error(f"HTTP error in polygon processing: {e.detail}")
             raise
         except Exception as e:
             logger.error(f"Error processing polygon: {e}", exc_info=True)
-            raise HTTPException(
-                status_code=500, detail=f"Server error: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
+
 
     def __del__(self):
         if hasattr(self, 'src'):
