@@ -1,0 +1,1142 @@
+[
+	{
+		"id": 1,
+		"name": "Магистраль - 1",
+		"color": "#8b0000",
+		"mobility": 1,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 20,
+				"lineBackdropWidths": {
+					"1": 60,
+					"2": 40,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 25,
+				"lineBackdropWidths": {
+					"1": 75,
+					"2": 50,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 30,
+				"lineBackdropWidths": {
+					"1": 90,
+					"2": 60,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 1,
+				"name": "Транспортная система",
+				"system_name": "TRANSPORT_SYSTEM",
+				"color": "#8b0000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2023-12-15T10:49:55.000000Z",
+		"updated_at": "2025-06-17T09:28:09.000000Z"
+	},
+	{
+		"id": 2,
+		"name": "Магистраль - 2",
+		"color": "#ff4500",
+		"mobility": 2,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 7,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 45,
+					"2": 30,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 20,
+				"lineBackdropWidths": {
+					"1": 60,
+					"2": 40,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 25,
+				"lineBackdropWidths": {
+					"1": 75,
+					"2": 50,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 1,
+				"name": "Транспортная система",
+				"system_name": "TRANSPORT_SYSTEM",
+				"color": "#8b0000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2023-12-15T10:49:55.000000Z",
+		"updated_at": "2025-06-17T09:28:27.000000Z"
+	},
+	{
+		"id": 3,
+		"name": "Улица/Дорога - 3",
+		"color": "#ff8c00",
+		"mobility": 3,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 7,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 36,
+					"2": 24,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 45,
+					"2": 30,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 20,
+				"lineBackdropWidths": {
+					"1": 60,
+					"2": 40,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 1,
+				"name": "Транспортная система",
+				"system_name": "TRANSPORT_SYSTEM",
+				"color": "#8b0000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2023-12-15T10:49:55.000000Z",
+		"updated_at": "2025-06-17T09:28:42.000000Z"
+	},
+	{
+		"id": 4,
+		"name": "Улица/Дорога - 4",
+		"color": "#ffd700",
+		"mobility": 4,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 5,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 7,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 30,
+					"2": 20,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 36,
+					"2": 24,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 45,
+					"2": 30,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 1,
+				"name": "Транспортная система",
+				"system_name": "TRANSPORT_SYSTEM",
+				"color": "#8b0000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2023-12-15T10:49:55.000000Z",
+		"updated_at": "2025-06-17T09:28:58.000000Z"
+	},
+	{
+		"id": 5,
+		"name": "Проезд - 5",
+		"color": "#ffe4b5",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 12,
+					"2": 8,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 5,
+				"lineBackdropWidths": {
+					"1": 15,
+					"2": 10,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 18,
+					"2": 12,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 7,
+				"lineBackdropWidths": {
+					"1": 21,
+					"2": 14,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 24,
+					"2": 16,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 30,
+					"2": 20,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 36,
+					"2": 24,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 1,
+				"name": "Транспортная система",
+				"system_name": "TRANSPORT_SYSTEM",
+				"color": "#8b0000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:22:51.000000Z",
+		"updated_at": "2024-01-21T06:45:39.000000Z"
+	},
+	{
+		"id": 6,
+		"name": "Тротуар (пс)",
+		"color": "#00ff99",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 0,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 0,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 2,
+				"name": "Пешеходная сеть",
+				"system_name": null,
+				"color": "#008000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:25:04.000000Z",
+		"updated_at": "2024-12-22T17:22:07.000000Z"
+	},
+	{
+		"id": 7,
+		"name": "Тротуар с велодорожкой",
+		"color": "#00ff99",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 20,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 2,
+				"name": "Пешеходная сеть",
+				"system_name": null,
+				"color": "#008000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:25:47.000000Z",
+		"updated_at": "2024-12-22T17:22:11.000000Z"
+	},
+	{
+		"id": 8,
+		"name": "Пешеходная дорожка",
+		"color": "#00ff99",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 0,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 0,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 45,
+					"2": 30,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 2,
+				"name": "Пешеходная сеть",
+				"system_name": null,
+				"color": "#008000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:26:31.000000Z",
+		"updated_at": "2024-12-22T17:22:15.000000Z"
+	},
+	{
+		"id": 9,
+		"name": "Общее пространство (пс)",
+		"color": "#00ff99",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 20,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 2,
+				"name": "Пешеходная сеть",
+				"system_name": null,
+				"color": "#008000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:27:25.000000Z",
+		"updated_at": "2024-12-22T17:22:17.000000Z"
+	},
+	{
+		"id": 10,
+		"name": "Дворовая территория (пс)",
+		"color": "#00ff99",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 2,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 3,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 5,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 2,
+				"name": "Пешеходная сеть",
+				"system_name": null,
+				"color": "#008000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:27:57.000000Z",
+		"updated_at": "2024-12-23T04:45:26.000000Z"
+	},
+	{
+		"id": 11,
+		"name": "Пешеходное пространство",
+		"color": "#00ff99",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 20,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 2,
+				"name": "Пешеходная сеть",
+				"system_name": null,
+				"color": "#008000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:28:26.000000Z",
+		"updated_at": "2024-12-22T17:22:26.000000Z"
+	},
+	{
+		"id": 12,
+		"name": "Пешеходная зона",
+		"color": "#00ff99",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 20,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 2,
+				"name": "Пешеходная сеть",
+				"system_name": null,
+				"color": "#008000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:28:46.000000Z",
+		"updated_at": "2024-12-22T17:24:39.000000Z"
+	},
+	{
+		"id": 13,
+		"name": "Пешеходный тоннель (пс)",
+		"color": "#00ff99",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 20,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 2,
+				"name": "Пешеходная сеть",
+				"system_name": null,
+				"color": "#008000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:29:07.000000Z",
+		"updated_at": "2024-12-22T17:24:44.000000Z"
+	},
+	{
+		"id": 14,
+		"name": "Лестница",
+		"color": "#00ff99",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 20,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 2,
+				"name": "Пешеходная сеть",
+				"system_name": null,
+				"color": "#008000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:30:33.000000Z",
+		"updated_at": "2024-12-22T17:24:48.000000Z"
+	},
+	{
+		"id": 15,
+		"name": "Эскалатор",
+		"color": "#00ff99",
+		"mobility": 5,
+		"zoom_width": {
+			"13": {
+				"lineWidth": 4,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"14": {
+				"lineWidth": 6,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"15": {
+				"lineWidth": 8,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"16": {
+				"lineWidth": 10,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"17": {
+				"lineWidth": 12,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"18": {
+				"lineWidth": 15,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			},
+			"19": {
+				"lineWidth": 20,
+				"lineBackdropWidths": {
+					"1": 0,
+					"2": 0,
+					"3": 0
+				}
+			}
+		},
+		"net_types": [
+			{
+				"id": 2,
+				"name": "Пешеходная сеть",
+				"system_name": null,
+				"color": "#008000",
+				"created_at": "2024-05-29T12:48:16.000000Z",
+				"updated_at": "2024-05-29T12:48:16.000000Z"
+			}
+		],
+		"created_at": "2024-01-17T13:31:06.000000Z",
+		"updated_at": "2024-12-22T17:24:52.000000Z"
+	}
+]

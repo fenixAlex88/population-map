@@ -1,8 +1,18 @@
+import json
 from fastapi import FastAPI, Depends, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from .models import Coordinates
+import psycopg2
+from .models import Coordinates, ViewportBox
 from .services import PopulationService
 from .logger import logger
+
+DB_CONFIG = {
+    'dbname': 'osm_belarus',
+    'user': 'postgres',
+    'password': 'wewrq22ef2',
+    'host': 'localhost',
+    'port': '5432'
+}
 
 app = FastAPI()
 
@@ -66,3 +76,89 @@ async def get_polygon_population(data: dict, service: PopulationService = Depend
     response = service.get_polygon_population(coordinates)
     logger.info(f"Polygon response data: {response}")
     return response
+
+
+@app.post("/nodes/viewport")
+async def get_nodes_in_viewport(
+    box: ViewportBox,
+):
+    def make_envelope(box):
+        # Проверка порядка координат
+        west, east = sorted([box.west, box.east])
+        south, north = sorted([box.south, box.north])
+        return (west, south, east, north)
+
+    envelope = make_envelope(box)
+
+    try:
+        with psycopg2.connect(**DB_CONFIG) as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    SELECT id, name, ST_X(geom::geometry), ST_Y(geom::geometry)
+                    FROM nodes
+                    WHERE ST_Within(
+                        geom::geometry,
+                        ST_MakeEnvelope(%s, %s, %s, %s, 4326)
+                    )
+                """, envelope)
+
+                results = [
+                    {
+                        "id": row[0],
+                        "name": row[1],
+                        "longitude": row[2],
+                        "latitude": row[3]
+                    }
+                    for row in cursor.fetchall()
+                ]
+
+        logger.info(f"Found {len(results)} nodes in viewport")
+        return results
+
+    except Exception as e:
+        logger.error(f"Error querying viewport nodes: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@app.post("/links/viewport")
+async def get_links_in_viewport(
+    box: ViewportBox,
+):
+    def make_envelope(box):
+        west, east = sorted([box.west, box.east])
+        south, north = sorted([box.south, box.north])
+        return (west, south, east, north)
+
+    envelope = make_envelope(box)
+
+    try:
+        with psycopg2.connect(**DB_CONFIG) as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    SELECT l.id, l.name,
+                           ST_AsGeoJSON(l.geom::geometry),
+                           lt.color
+                    FROM links l
+                    JOIN link_types lt ON l.link_type_id = lt.id
+                    WHERE ST_Intersects(
+                        l.geom::geometry,
+                        ST_MakeEnvelope(%s, %s, %s, %s, 4326)
+                    )
+                """, envelope)
+
+                results = [
+                    {
+                        "id": row[0],
+                        "name": row[1],
+                        "geometry": json.loads(row[2]),
+                        "color": row[3]
+                    }
+                    for row in cursor.fetchall()
+                ]
+
+        logger.info(f"Found {len(results)} links in viewport")
+        return results
+
+    except Exception as e:
+        logger.error(f"Error querying viewport links: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
